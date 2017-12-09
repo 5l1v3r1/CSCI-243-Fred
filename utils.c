@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <math.h>
 #include "symtab.h"
 #include "utils.h"
 #include "stackADT.h"
@@ -27,20 +28,34 @@ void loadSymTabFile(char *symtabFile, SymTab *symtab) {
     Value value;
     
     char *lineptr = NULL;
+    char *lineptr2 = NULL;
     size_t len = 0;
-    ssize_t nread = 0;
 
-    while((nread = getdelim(&lineptr, &len, ' ', fdSym)) != -1) {
-        printf("nread = %lu\n", nread);
+    while(getline(&lineptr2, &len, fdSym) != -1) {
+        lineptr = strtok(lineptr2, " \n");
         sscanf(lineptr, "%s", typeName);
 
-        getdelim(&lineptr, &len, ' ', fdSym);
+        lineptr = strtok(NULL, " \n");
         sscanf(lineptr, "%7s", symName);
 
-        getdelim(&lineptr, &len, '\n', fdSym);
+        lineptr = strtok(NULL, " \n");
+        bool isFloat = false;
+        for (size_t i = 0; i < strlen(lineptr); i++) {
+            if (lineptr[i] == '.') {
+                isFloat = true;
+                break;
+            }
+        }
 
         if (!strcmp("integer", typeName)) {
-            sscanf(lineptr, "%d", &value.iVal);
+            if (isFloat) {
+                float f = 0.0;
+                sscanf(lineptr, "%f", &f);
+                f = roundf(f);
+                value.iVal = (int) f;
+            } else {
+                sscanf(lineptr, "%d", &value.iVal);
+            }
             printf("%s %s %d\n", typeName, symName, value.iVal);
             put(symName, value, Integer, symtab);
         } else if (!strcmp("real", typeName)) {
@@ -51,8 +66,8 @@ void loadSymTabFile(char *symtabFile, SymTab *symtab) {
         
     }
 
-    if (lineptr != NULL) {
-        free(lineptr);
+    if (lineptr2 != NULL) {
+        free(lineptr2);
     }
     fclose(fdSym);
 }
