@@ -32,6 +32,8 @@ void loadSymTabFile(char *symtabFile, SymTab *symtab) {
     size_t len = 0;
 
     while(getline(&lineptr2, &len, fdSym) != -1) {
+        assert(strlen(lineptr2) > 1);
+        
         lineptr = strtok(lineptr2, " \n");
         sscanf(lineptr, "%s", typeName);
 
