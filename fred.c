@@ -9,6 +9,33 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include "utils.h"
+#include "symtab.h"
+
+
+void processProgram(char *symtabFile, char *programFile) {
+    char *cmd;
+    size_t len = 1337;
+
+    SymTab *symtab = createSymTab();
+    if (symtabFile != NULL) {
+        loadSymTabFile(symtabFile, symtab);
+    }
+
+    FILE *fdProg = stdin;
+    if (programFile != NULL) {
+        fdProg = fopen(programFile, "r");
+        if (fdProg == NULL) {
+            fprintf("Error opening program file %s\n", programFile);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if (programFile != NULL && fdProg != NULL) {
+        fclose(fdProg);
+    }
+
+    destroySymTab(symtab);
+}
 
 int main(int argc, char **argv) {
     char *symtabFile = NULL;
@@ -45,4 +72,13 @@ int main(int argc, char **argv) {
             }
         }
     }
+
+    processProgram(symtabFile, programFile);
+    if (programFile != NULL) {
+        free(programFile);
+    }
+    if (symtabFile != NULL) {
+        free(symtabFile);
+    }
+    return EXIT_SUCCESS;
 }

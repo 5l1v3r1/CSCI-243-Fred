@@ -1,5 +1,5 @@
 #
-# Created by gmakemake (Ubuntu Jul 25 2014) on Wed Dec  6 19:23:40 2017
+# Created by gmakemake (Ubuntu Jul 25 2014) on Sat Dec  9 00:32:30 2017
 #
 
 #
@@ -50,13 +50,13 @@ CLIBFLAGS = -lm
 
 
 CPP_FILES =	
-C_FILES =	fred.c
+C_FILES =	fred.c symtab.c utils.c
 PS_FILES =	
 S_FILES =	
-H_FILES =	
+H_FILES =	symtab.h utils.h
 SOURCEFILES =	$(H_FILES) $(CPP_FILES) $(C_FILES) $(S_FILES)
 .PRECIOUS:	$(SOURCEFILES)
-OBJFILES =	
+OBJFILES =	symtab.o utils.o 
 
 #
 # Main targets
@@ -71,7 +71,9 @@ fred:	fred.o $(OBJFILES)
 # Dependencies
 #
 
-fred.o:	
+fred.o:	symtab.h utils.h
+symtab.o:	symtab.h
+utils.o:	symtab.h utils.h
 
 #
 # Housekeeping
