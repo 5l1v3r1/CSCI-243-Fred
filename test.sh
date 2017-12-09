@@ -13,3 +13,6 @@ valgrind --leak-check=full --track-origins=yes ./fred -s sym.3
 
 echo "valgrind --leak-check=full --track-origins=yes ./fred"
 valgrind --leak-check=full --track-origins=yes ./fred
+
+echo "valgrind --leak-check=full --track-origins=yes ./fred -s sym.3 -f prog2.fr"
+valgrind --leak-check=full --track-origins=yes ./fred -s sym.3 -f prog2.fr
