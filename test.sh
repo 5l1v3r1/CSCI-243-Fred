@@ -1,4 +1,6 @@
 #!/bin/bash
+make realclean && make
+
 echo "valgrind --leak-check=full --track-origins=yes ./fred </dev/null"
 valgrind --leak-check=full --track-origins=yes ./fred </dev/null
 

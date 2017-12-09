@@ -77,7 +77,6 @@ void processProgram(char *symtabFile, char *programFile) {
         } else if (!strncmp(cmd + idx, "if ", strlen("if "))) {
 
         }
-        // parse and process here
     }
 
     dump(symtab);

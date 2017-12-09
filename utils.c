@@ -80,12 +80,6 @@ int symbolCmp(const void *p1, const void *p2) {
     return strcmp( (*(Symbol **)p1) -> name, (*(Symbol **)p2) -> name);
 }
 
-/// Strip the trailing and heading whitespace and newline character
-/// @param line: the line to strip
-char* strip(char *line) {
-
-}
-
 /// Process the define statement
 /// @param cmd: the statement
 void processDefine(char *cmd) {
@@ -146,12 +140,8 @@ void processDisplay(char *cmd, SymTab *symtab) {
     while(lineptr != NULL) {
         if (strlen(lineptr) > 0) {
             printf(" ");
-            if (('A' <= lineptr[0] && lineptr[0] <= 'Z') || ('a' <= lineptr[0] && lineptr[0] <= 'z')) {
-                Symbol *entry = get(lineptr, symtab);
-                printValSymbol(entry);
-            } else {
-
-            }
+            Symbol entry = elementToValue(lineptr, symtab);
+            printValSymbol(&entry);
         }
         lineptr = strtok(NULL, " ,\n");
     }
@@ -165,4 +155,37 @@ void printValSymbol(Symbol *entry) {
     } else {
         printf("%.3f", entry -> value.fVal);
     }
+}
+
+/// Retrieve the value of an element as a symbol
+/// @param lineptr: the line contain the element
+/// @param symtab: the symbol table
+/// @return: a symbol contain the element
+Symbol elementToValue(char *lineptr, SymTab *symtab) {
+    Symbol symbol;
+    strcpy(symbol.name, "element");
+
+    if (strlen(lineptr) > 0) {
+        if (('A' <= lineptr[0] && lineptr[0] <= 'Z') || ('a' <= lineptr[0] && lineptr[0] <= 'z')) {
+            Symbol *entry = get(lineptr, symtab);
+            symbol.value = entry -> value;
+            symbol.type = entry -> type;
+        } else {
+            bool isFloat = false;
+            for (size_t i = 0; i < strlen(lineptr); i++) {
+                if (lineptr[i] == '.') {
+                    isFloat = true;
+                    break;
+                }
+            }
+            if (isFloat) {
+                sscanf(lineptr, "%f", &symbol.value.fVal);
+                symbol.type = Float;
+            } else {
+                sscanf(lineptr, "%d", &symbol.value.iVal);
+                symbol.type = Integer;
+            }
+        }
+    }
+    return symbol;
 }

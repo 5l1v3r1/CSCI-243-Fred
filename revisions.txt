@@ -1,3 +1,9 @@
+commit 65a5c6fbd52eeafbc9e4ae8030672aa2b9d58d75
+Author: dphan <ducphanduy.agentp@gmail.com>
+Date:   Sat Dec 9 18:24:31 2017 -0500
+
+    Add tests
+
 commit a30eaa597831b49f86030eba9c8ba505aa2c4e56
 Author: dphan <ducphanduy.agentp@gmail.com>
 Date:   Sat Dec 9 18:16:33 2017 -0500
