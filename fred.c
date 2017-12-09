@@ -33,11 +33,18 @@ void processProgram(char *symtabFile, char *programFile) {
     }
     // Process
     Value value;
+    
     value.iVal = 10;
-    put("sym1", value, Integer, symtab);
+    put("ab", value, Integer, symtab);
 
+    value.fVal = 100.12345;
+    put("bab", value, Float, symtab);
+    
     value.fVal = 13.37;
-    put("sym2", value, Float, symtab);
+    put("aab", value, Float, symtab);
+
+    value.iVal = 69;
+    put("ab", value, Integer, symtab);
 
     dump(symtab);
     if (programFile != NULL && fdProg != NULL) {

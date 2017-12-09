@@ -1,5 +1,5 @@
 #
-# Created by gmakemake (Ubuntu Jul 25 2014) on Sat Dec  9 10:31:22 2017
+# Created by gmakemake (Ubuntu Jul 25 2014) on Sat Dec  9 11:54:50 2017
 #
 
 #
@@ -73,7 +73,7 @@ fred:	fred.o $(OBJFILES)
 
 fred.o:	symtab.h utils.h
 stackADT.o:	stackADT.h
-symtab.o:	symtab.h
+symtab.o:	symtab.h utils.h
 utils.o:	stackADT.h symtab.h utils.h
 
 #

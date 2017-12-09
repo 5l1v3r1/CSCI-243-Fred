@@ -107,7 +107,7 @@ int has(char *name, SymTab *symtab) {
 /// Dump the symbol table in alphabetical order
 /// @param symtab: the symbol table to be dumped
 void dump(SymTab *symtab) {
-    qsort((void *) symtab -> table, symtab -> nEntry, sizeof(Symbol *), symbolCmp);
+    qsort((void *) (symtab -> table), symtab -> nEntry, sizeof(Symbol *), symbolCmp);
     puts("Symbol Table Contents");
     puts("Name    Type    Value");
     puts("=====================");
