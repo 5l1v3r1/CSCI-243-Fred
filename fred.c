@@ -44,7 +44,7 @@ void processProgram(char *symtabFile, char *programFile) {
         }
         
         printf(ECHO);
-        printf(cmd);
+        printf("%s", cmd);
         if (cmd[strlen(cmd) - 1] != '\n') {
             puts("");
         }
