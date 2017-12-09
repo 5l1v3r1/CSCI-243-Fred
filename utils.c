@@ -31,9 +31,9 @@ void loadSymTabFile(char *symtabFile, SymTab *symtab) {
     char *lineptr2 = NULL;
     size_t len = 0;
 
-    while(getline(&lineptr2, &len, fdSym) != -1) {
+    while(getline(&lineptr2, &len, fdSym) != EOF) {
         assert(strlen(lineptr2) > 1);
-        
+
         lineptr = strtok(lineptr2, " \n");
         sscanf(lineptr, "%s", typeName);
 
@@ -58,11 +58,11 @@ void loadSymTabFile(char *symtabFile, SymTab *symtab) {
             } else {
                 sscanf(lineptr, "%d", &value.iVal);
             }
-            printf("%s %s %d\n", typeName, symName, value.iVal);
+            //printf("%s %s %d\n", typeName, symName, value.iVal);
             put(symName, value, Integer, symtab);
         } else if (!strcmp("real", typeName)) {
             sscanf(lineptr, "%f", &value.fVal);
-            printf("%s %s %.3f\n", typeName, symName, value.fVal);
+            //printf("%s %s %.3f\n", typeName, symName, value.fVal);
             put(symName, value, Float, symtab);
         }
         
@@ -72,13 +72,6 @@ void loadSymTabFile(char *symtabFile, SymTab *symtab) {
         free(lineptr2);
     }
     fclose(fdSym);
-}
-
-/// Parse a symbol entry from a line of text
-/// @param line: the line containing the symbol entry
-/// @return: pointer to a symbol
-Symbol* parseSymbol(char *line) {
-
 }
 
 /// Comparator for symbol entries

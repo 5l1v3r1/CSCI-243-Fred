@@ -4,6 +4,7 @@
 
 #define _BSD_SOURCE
 #define PROMPT "> "
+#define ECHO "::: "
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,8 +16,8 @@
 
 
 void processProgram(char *symtabFile, char *programFile) {
-    char *cmd;
-    size_t len = 1337;
+    char *cmd = NULL;
+    size_t len = 0;
 
     SymTab *symtab = createSymTab();
     if (symtabFile != NULL) {
@@ -31,26 +32,29 @@ void processProgram(char *symtabFile, char *programFile) {
             exit(EXIT_FAILURE);
         }
     }
-    // Process
-    Value value;
-    
-    value.iVal = 10;
-    put("ab", value, Integer, symtab);
 
-    value.fVal = 100.12345;
-    put("bab", value, Float, symtab);
-    
-    value.fVal = 13.37;
-    put("aab", value, Float, symtab);
+    while(true) {
+        printf(PROMPT);
 
-    value.iVal = 69;
-    put("ab", value, Integer, symtab);
+        if (getline(&cmd, &len, fdProg) == EOF) {
+            puts("");
+            break;
+        }
+        
+        printf(ECHO);
+        puts(cmd);
+
+        // parse and process here
+    }
 
     dump(symtab);
     if (programFile != NULL && fdProg != NULL) {
         fclose(fdProg);
     }
 
+    if (cmd != NULL) {
+        free(cmd);
+    }
     destroySymTab(symtab);
 }
 
