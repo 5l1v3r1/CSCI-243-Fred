@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
                         return EXIT_FAILURE;
                     }
                     symtabFile = (char *) malloc(strlen(optarg) + 1);
-                    strncpy(symtabFile, optarg, strlen(optarg));
+                    strncpy(symtabFile, optarg, strlen(optarg) + 1);
                     break;
                 case 'f':
                     if (programFile != NULL) {
@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
                         return EXIT_FAILURE;
                     }
                     programFile = (char *) malloc(strlen(optarg) + 1);
-                    strncpy(programFile, optarg, strlen(optarg));
+                    strncpy(programFile, optarg, strlen(optarg) + 1);
                     break;
                 default:
                     fprintf(stderr, "fred  [ -s symbol_table_file ] [ -f program_file ]\n");

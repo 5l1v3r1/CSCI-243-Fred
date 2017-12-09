@@ -52,7 +52,7 @@ Symbol* createSymbol(char *name, Value value, Type type) {
         fprintf(stderr, "symtab::createSymbol() failed to allocate memory.\n");
         exit(EXIT_FAILURE);
     }
-    strncpy(new -> name, name, MAX_NAME_LEN);
+    strncpy(new -> name, name, MAX_NAME_LEN + 1);
     new -> type = type;
     new -> value = value;
     return new;
