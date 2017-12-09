@@ -19,4 +19,16 @@ void loadSymTabFile(char *symtabFile, SymTab *symtab);
 /// @return: -1 if p1 < p2, 0 if p1 == p2, 1 if p1 > p2
 int symbolCmp(const void *p1, const void *p2);
 
+/// Strip the trailing and heading whitespace and newline character
+/// @param line: the line to strip
+char* strip(char *line);
+
+/// Process the define statement
+/// @param cmd: the statement
+void processDefine(char *cmd);
+
+/// Process the prt statement
+/// @param cmd: the statement
+void processPrt(char *cmd);
+
 #endif

@@ -3,7 +3,7 @@
 /// author: Duc Phan - ddp3945@rit.edu
 
 #define _BSD_SOURCE
-#define PROMPT "> "
+#define PROMPT "\n> "
 #define ECHO "::: "
 
 #include <stdio.h>
@@ -18,6 +18,7 @@
 void processProgram(char *symtabFile, char *programFile) {
     char *cmd = NULL;
     size_t len = 0;
+    char *lineptr = NULL;
 
     SymTab *symtab = createSymTab();
     if (symtabFile != NULL) {
@@ -32,8 +33,9 @@ void processProgram(char *symtabFile, char *programFile) {
             exit(EXIT_FAILURE);
         }
     }
-
+    
     while(true) {
+        
         printf(PROMPT);
 
         if (getline(&cmd, &len, fdProg) == EOF) {
@@ -41,9 +43,27 @@ void processProgram(char *symtabFile, char *programFile) {
             break;
         }
         
+        
         printf(ECHO);
-        puts(cmd);
+        printf(cmd);
+        if (cmd[strlen(cmd) - 1] != '\n') {
+            puts("");
+        }
 
+        size_t idx = 0;
+        while(cmd[idx] == ' ') {
+            idx++;
+        }
+
+        if (!strncmp(cmd + idx, "prt ", strlen("ptr "))) {
+            while(cmd[idx] != ' ') {
+                idx++;
+            }
+            while(cmd[idx] == ' ') {
+                idx++;
+            }
+            processPrt(cmd + idx);
+        }
         // parse and process here
     }
 
@@ -54,6 +74,10 @@ void processProgram(char *symtabFile, char *programFile) {
 
     if (cmd != NULL) {
         free(cmd);
+    }
+
+    if (lineptr != NULL) {
+        free(lineptr);
     }
     destroySymTab(symtab);
 }

@@ -1,0 +1,2 @@
+ prt "a\tb\nc\\d  e"   
+    prt                       "aaa\tbbb\tccc`''"    

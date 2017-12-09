@@ -85,3 +85,47 @@ int symbolCmp(const void *p1, const void *p2) {
     // printf("%d\n", strcmp( (*(Symbol **)p1) -> name, (*(Symbol **)p2) -> name));
     return strcmp( (*(Symbol **)p1) -> name, (*(Symbol **)p2) -> name);
 }
+
+/// Strip the trailing and heading whitespace and newline character
+/// @param line: the line to strip
+char* strip(char *line) {
+
+}
+
+/// Process the define statement
+/// @param cmd: the statement
+void processDefine(char *cmd) {
+
+}
+
+/// Process the prt statement
+/// @param cmd: the statement
+void processPrt(char *cmd) {
+    size_t endIdx = strlen(cmd) - 1;
+    while(cmd[endIdx] != cmd[0]) {
+        endIdx--;
+    }
+
+    for (size_t i = 1; i < endIdx; ) {
+        if (cmd[i] == '\\') {
+            switch(cmd[i + 1]) {
+                case 'n':
+                    putchar('\n');
+                    break;
+                case 't':
+                    putchar('\t');
+                    break;
+                case '\\':
+                    putchar('\\');
+                    break;
+                default:
+                    break;
+            }
+            i += 2;
+        } else {
+            putchar(cmd[i]);
+            i += 1;
+        }
+        fflush(stdout);
+    }
+}
