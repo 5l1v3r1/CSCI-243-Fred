@@ -31,4 +31,21 @@ void processDefine(char *cmd);
 /// @param cmd: the statement
 void processPrt(char *cmd);
 
+/// Process the let statement
+/// @param cmd: the statement
+void processLet(char *cmd);
+
+/// Process the if statement
+/// @param cmd: the statement
+void processIf(char *cmd);
+
+/// Process the display statement
+/// @param cmd: the statement
+/// @param symtab: the symbol table
+void processDisplay(char *cmd, SymTab *symtab);
+
+/// Print symbol's value
+/// @param entry: the symbol
+void printValSymbol(Symbol *entry);
+
 #endif

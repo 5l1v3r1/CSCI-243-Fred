@@ -114,11 +114,7 @@ void dump(SymTab *symtab) {
     for (size_t i = 0; i < symtab -> nEntry; i++) {
         Symbol *entry = symtab -> table[i];
         printf("%-8s%-8s", entry -> name, entry -> type == Integer ? "integer" : "real");
-        if (entry -> type == Integer) {
-            printf("%d", entry -> value.iVal);
-        } else {
-            printf("%.3f", entry -> value.fVal);
-        }
+        printValSymbol(entry);
         puts("");
     }
 }

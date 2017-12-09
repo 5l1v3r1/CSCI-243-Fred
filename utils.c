@@ -58,11 +58,9 @@ void loadSymTabFile(char *symtabFile, SymTab *symtab) {
             } else {
                 sscanf(lineptr, "%d", &value.iVal);
             }
-            //printf("%s %s %d\n", typeName, symName, value.iVal);
             put(symName, value, Integer, symtab);
         } else if (!strcmp("real", typeName)) {
             sscanf(lineptr, "%f", &value.fVal);
-            //printf("%s %s %.3f\n", typeName, symName, value.fVal);
             put(symName, value, Float, symtab);
         }
         
@@ -79,10 +77,6 @@ void loadSymTabFile(char *symtabFile, SymTab *symtab) {
 /// @param p2: The second symbol
 /// @return: < 0 if p1 < p2, 0 if p1 == p2, > 0 if p1 > p2
 int symbolCmp(const void *p1, const void *p2) {
-    // printf("%p %p\n", (void *) *(Symbol **)p1, (void *) *(Symbol **)p2);
-    // puts((*(Symbol **)p1) -> name);
-    // puts((*(Symbol **)p2) -> name);
-    // printf("%d\n", strcmp( (*(Symbol **)p1) -> name, (*(Symbol **)p2) -> name));
     return strcmp( (*(Symbol **)p1) -> name, (*(Symbol **)p2) -> name);
 }
 
@@ -127,5 +121,48 @@ void processPrt(char *cmd) {
             i += 1;
         }
         fflush(stdout);
+    }
+}
+
+/// Process the let statement
+/// @param cmd: the statement
+void processLet(char *cmd) {
+
+}
+
+/// Process the if statement
+/// @param cmd: the statement
+void processIf(char *cmd) {
+
+}
+
+/// Process the display statement
+/// @param cmd: the statement
+/// @param symtab: the symbol table
+void processDisplay(char *cmd, SymTab *symtab) {
+    char *lineptr = NULL;
+    lineptr = strtok(cmd, " ,\n");
+
+    while(lineptr != NULL) {
+        if (strlen(lineptr) > 0) {
+            printf(" ");
+            if (('A' <= lineptr[0] && lineptr[0] <= 'Z') || ('a' <= lineptr[0] && lineptr[0] <= 'z')) {
+                Symbol *entry = get(lineptr, symtab);
+                printValSymbol(entry);
+            } else {
+
+            }
+        }
+        lineptr = strtok(NULL, " ,\n");
+    }
+}
+
+/// Print symbol's value
+/// @param entry: the symbol
+void printValSymbol(Symbol *entry) {
+    if (entry -> type == Integer) {
+        printf("%d", entry -> value.iVal);
+    } else {
+        printf("%.3f", entry -> value.fVal);
     }
 }

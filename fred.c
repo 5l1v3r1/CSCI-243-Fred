@@ -43,7 +43,6 @@ void processProgram(char *symtabFile, char *programFile) {
             break;
         }
         
-        
         printf(ECHO);
         printf(cmd);
         if (cmd[strlen(cmd) - 1] != '\n') {
@@ -63,6 +62,20 @@ void processProgram(char *symtabFile, char *programFile) {
                 idx++;
             }
             processPrt(cmd + idx);
+        } else if (!strncmp(cmd + idx, "display ", strlen("display "))) {
+            while(cmd[idx] != ' ') {
+                idx++;
+            }
+            while(cmd[idx] == ' ') {
+                idx++;
+            }
+            processDisplay(cmd + idx, symtab);
+        } else if (!strncmp(cmd + idx, "define ", strlen("define "))) {
+           
+        } else if (!strncmp(cmd + idx, "let ", strlen("let "))) {
+            
+        } else if (!strncmp(cmd + idx, "if ", strlen("if "))) {
+
         }
         // parse and process here
     }
