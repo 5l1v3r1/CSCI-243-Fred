@@ -41,32 +41,84 @@ void destroySymTab(SymTab *symtab) {
     free(symtab);
 }
 
+/// Create a new symbol
+/// @param name: name of the symbol
+/// @param value: the value of the symbol
+/// @param type: the type of the symbol
+/// @return: the pointer to the symbol
+Symbol* createSymbol(char *name, Value value, Type type) {
+    Symbol *new = (Symbol *) malloc(sizeof(Symbol));
+    if (new == NULL) {
+        fprintf(stderr, "symtab::createSymbol() failed to allocate memory.\n");
+        exit(EXIT_FAILURE);
+    }
+    strncpy(new -> name, name, MAX_NAME_LEN);
+    new -> type = type;
+    new -> value = value;
+    return new;
+}
+
 /// Put a symbol into a symbol table
 /// @param name: name of the symbol
 /// @param value: the value of the symbol
 /// @param type: type of the symbol
 /// @param symtab: the symbol table to put the symbol into
-/// @return: true if the symbol is successfully put, otherwise false
-bool put(char *name, Value value, Type type, SymTab *symtab) {
-
+void put(char *name, Value value, Type type, SymTab *symtab) {
+    int idx = has(name, symtab);
+    if (idx == -1) {
+        if (symtab -> nEntry * RESIZE_THRESHOLD >= symtab -> cap) {
+            // TODO: resize
+        }
+        Symbol *new = createSymbol(name, value, type);
+        symtab -> table[symtab -> nEntry++] = new;
+    } else {
+        symtab -> table[idx] -> value = value;
+    }
 }
 
 /// Get the symbol with the specified name
-/// param name: name of the symbol to get
+/// @param name: name of the symbol to get
+/// @param symtab: the symbol table to get
 /// @return: pointer to the symbol, NULL if not found
-Symbol* get(char *name) {
-
+Symbol* get(char *name, SymTab *symtab) {
+    int idx = has(name, symtab);
+    if (idx == -1) {
+        return NULL;
+    }
+    return symtab -> table[idx];
 }
 
 /// Determine if a symbol with the specified name is in the table
 /// @param name: the name of the symbol
-/// @return: true if the symbol is found, false otherwise.
-bool has(char *name) {
-
+/// @param symtab: the symbol table to check
+/// @return: index of the symbol if it's in the table, otherwise -1
+int has(char *name, SymTab *symtab) {
+    for (size_t i = 0; i < symtab -> nEntry; i++) {
+        Symbol *entry = symtab -> table[i];
+        if (entry != NULL) {
+            if (!strncmp(name, entry -> name, MAX_NAME_LEN)) {
+                return i;
+            }
+        }
+    }
+    return -1;
 }
 
 /// Dump the symbol table in alphabetical order
 /// @param symtab: the symbol table to be dumped
 void dump(SymTab *symtab) {
-
+    qsort((void *) symtab -> table, symtab -> nEntry, sizeof(Symbol *), symbolCmp);
+    puts("Symbol Table Contents");
+    puts("Name    Type    Value");
+    puts("=====================");
+    for (size_t i = 0; i < symtab -> nEntry; i++) {
+        Symbol *entry = symtab -> table[i];
+        printf("%-8s%-8s", entry -> name, entry -> type == Integer ? "integer" : "real");
+        if (entry -> type == Integer) {
+            printf("%d", entry -> value.iVal);
+        } else {
+            printf("%.3f", entry -> value.fVal);
+        }
+        puts("");
+    }
 }

@@ -31,7 +31,15 @@ void processProgram(char *symtabFile, char *programFile) {
             exit(EXIT_FAILURE);
         }
     }
+    // Process
+    Value value;
+    value.iVal = 10;
+    put("sym1", value, Integer, symtab);
 
+    value.fVal = 13.37;
+    put("sym2", value, Float, symtab);
+
+    dump(symtab);
     if (programFile != NULL && fdProg != NULL) {
         fclose(fdProg);
     }
