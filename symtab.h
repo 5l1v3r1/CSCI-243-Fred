@@ -5,10 +5,7 @@
 #ifndef SYMTAB_H
 #define SYMTAB_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
 
 #define MAX_NAME_LEN 7
 #define RESIZE_FACTOR 2

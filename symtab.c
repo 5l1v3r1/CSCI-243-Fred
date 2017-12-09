@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "symtab.h"
+#include "utils.h"
 
 /// Create a new empty Symbol Table
 /// @return: pointer to a new symbol table
@@ -23,12 +24,21 @@ SymTab* createSymTab() {
         fprintf(stderr, "symtab::createSymTab() failed to allocate memory.\n");
         exit(EXIT_FAILURE);
     }
+    return symtab;
 }
 
 /// Destroy a symbol table
 /// @param symtab: pointer to a symbol table
 void destroySymTab(SymTab *symtab) {
-
+    for (size_t i = 0; i < symtab -> nEntry; i++) {
+        if (symtab -> table[i] != NULL) {
+            free(symtab -> table[i]);
+            symtab -> table[i] = NULL;
+        }
+    }
+    free(symtab -> table);
+    symtab -> table = NULL;
+    free(symtab);
 }
 
 /// Put a symbol into a symbol table
@@ -58,5 +68,5 @@ bool has(char *name) {
 /// Dump the symbol table in alphabetical order
 /// @param symtab: the symbol table to be dumped
 void dump(SymTab *symtab) {
-    
+
 }

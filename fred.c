@@ -3,6 +3,8 @@
 /// author: Duc Phan - ddp3945@rit.edu
 
 #define _BSD_SOURCE
+#define PROMPT "> "
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,7 +27,7 @@ void processProgram(char *symtabFile, char *programFile) {
     if (programFile != NULL) {
         fdProg = fopen(programFile, "r");
         if (fdProg == NULL) {
-            fprintf("Error opening program file %s\n", programFile);
+            fprintf(stderr, "Error opening program file %s\n", programFile);
             exit(EXIT_FAILURE);
         }
     }
