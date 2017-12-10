@@ -1,3 +1,9 @@
+commit ec09030f45f7ee5bc5bedb0a6ba3a8fb98e193c0
+Author: dphan <ducphanduy.agentp@gmail.com>
+Date:   Sat Dec 9 23:41:13 2017 -0500
+
+    Fix expression error handler
+
 commit 6f4ecc8a98a0027172e0fd3cf20db272cbf65a81
 Author: dphan <ducphanduy.agentp@gmail.com>
 Date:   Sat Dec 9 23:29:44 2017 -0500

@@ -209,6 +209,7 @@ void processLet(char *cmd, SymTab *symtab) {
     // Convert to postfix
     while (!stk_empty(st2)) {
         Symbol *sym = (Symbol *) stk_pop(st2);
+
         if (sym -> type != Unknown) {
             stk_push(st3, (void *) sym);
         } else {
@@ -228,8 +229,8 @@ void processLet(char *cmd, SymTab *symtab) {
                 while (!stk_empty(st1)) {
                     Symbol *top = stk_top(st1);
                     if (top -> name[0] == '(') {
-                        top = stk_pop(st1);
-                        free(top);
+                        // top = stk_pop(st1);
+                        // free(top);
                         break;
                     }
                     if (top -> value.iVal <= sym -> value.iVal) {
@@ -246,7 +247,7 @@ void processLet(char *cmd, SymTab *symtab) {
     while (!stk_empty(st1)) {
         stk_push(st3, stk_pop(st1));
     }
-    while (!stk_empty(st3)) {      
+    while (!stk_empty(st3)) {
         stk_push(st2, stk_pop(st3));
     }
 
