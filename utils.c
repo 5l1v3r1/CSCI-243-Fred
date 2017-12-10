@@ -151,7 +151,6 @@ void processPrt(char *cmd) {
 void processLet(char *cmd, SymTab *symtab) {
     char *lineptr = NULL;
     char *varName = strtok(cmd, " ,\n");
-    
     if (has(varName, symtab) == -1) {
         fprintf(stderr, "let: symbol '%s' does not exist\n", varName);
         return;
@@ -177,7 +176,22 @@ void processLet(char *cmd, SymTab *symtab) {
             
             if (sym.type == Unknown) {
                 fprintf(stderr, "let: symbol '%s' does not exist\n", lineptr);
-                break;
+                while(!stk_empty(st2)) {
+                    free(stk_pop(st2));
+                }
+            
+                while(!stk_empty(st1)) {
+                    free(stk_pop(st1));
+                }
+            
+                while(!stk_empty(st3)) {
+                    free(stk_pop(st3));
+                }
+            
+                stk_destroy(st1);
+                stk_destroy(st2);
+                stk_destroy(st3);
+                return;
             }
             stk_push(st1, (void *) createSymbol(sym.name, sym.value, sym.type));
         } else {
