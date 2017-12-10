@@ -1,3 +1,9 @@
+commit 790eb994d53dfefe20b56ff29c0fd5ec3b785c89
+Author: dphan <ducphanduy.agentp@gmail.com>
+Date:   Sat Dec 9 23:19:29 2017 -0500
+
+    Add processIf (include recursive processing)
+
 commit 7e16bd60213a39788e12030c6ff72a1b29f75ea6
 Author: dphan <ducphanduy.agentp@gmail.com>
 Date:   Sat Dec 9 22:41:46 2017 -0500
