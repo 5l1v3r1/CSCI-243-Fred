@@ -66,8 +66,19 @@ Symbol* createSymbol(char *name, Value value, Type type) {
 void put(char *name, Value value, Type type, SymTab *symtab) {
     int idx = has(name, symtab);
     if (idx == -1) {
-        if (symtab -> nEntry * RESIZE_THRESHOLD >= symtab -> cap) {
-            // TODO: resize
+        if (symtab -> nEntry >= RESIZE_THRESHOLD * symtab -> cap) {
+            symtab -> table = (Symbol **) realloc((void *) symtab -> table, 
+            sizeof(Symbol *) * symtab -> cap * RESIZE_FACTOR);
+            
+            if (symtab -> table == NULL) {
+                fprintf(stderr, "symtab::put() failed to allocate memory");
+                exit(EXIT_FAILURE);
+            }
+
+            symtab -> cap *= RESIZE_FACTOR;
+            for (size_t i = symtab -> nEntry; i < symtab -> cap; i++) {
+                symtab -> table[i] = NULL;
+            }
         }
         Symbol *new = createSymbol(name, value, type);
         symtab -> table[symtab -> nEntry++] = new;

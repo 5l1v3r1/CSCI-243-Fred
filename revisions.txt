@@ -1,3 +1,9 @@
+commit 18db1b1d261e4a10068bf8258defe5799129c721
+Author: dphan <ducphanduy.agentp@gmail.com>
+Date:   Sat Dec 9 19:24:15 2017 -0500
+
+    Add error handling to display and define command
+
 commit 4bf9db71579af28fa9e7abd2c09fde52212979c7
 Author: dphan <ducphanduy.agentp@gmail.com>
 Date:   Sat Dec 9 18:55:51 2017 -0500

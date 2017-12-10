@@ -9,7 +9,7 @@
 
 #define MAX_NAME_LEN 7
 #define RESIZE_FACTOR 2
-#define RESIZE_THRESHOLD 2
+#define RESIZE_THRESHOLD 0.75
 #define INIT_CAP 1337
 
 typedef enum type_enum {
