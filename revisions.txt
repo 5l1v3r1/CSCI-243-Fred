@@ -1,3 +1,9 @@
+commit b07c9405cf5ba4e972df67bd64f0c265e79b4cd5
+Author: dphan <ducphanduy.agentp@gmail.com>
+Date:   Sat Dec 9 19:58:06 2017 -0500
+
+    Add symbol table resizing
+
 commit 18db1b1d261e4a10068bf8258defe5799129c721
 Author: dphan <ducphanduy.agentp@gmail.com>
 Date:   Sat Dec 9 19:24:15 2017 -0500

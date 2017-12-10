@@ -149,7 +149,236 @@ void processPrt(char *cmd) {
 /// @param cmd: the statement
 /// @param symtab: the symbol table
 void processLet(char *cmd, SymTab *symtab) {
+    char *lineptr = NULL;
+    char *varName = strtok(cmd, " ,\n");
+    //printf("varName = %s\n", varName);
+    
+    if (has(varName, symtab) == -1) {
+        fprintf(stderr, "let: symbol '%s' does not exist\n", varName);
+        return;
+    }
+    
+    strtok(NULL, " ,\n");
+    
+    StackADT st1;
+    st1 = stk_create();
 
+    StackADT st2;
+    st2 = stk_create();
+
+    StackADT st3;
+    st3 = stk_create();
+
+    // Extract tokens
+    lineptr = strtok(NULL, " ,\n");
+    while(lineptr != NULL) {
+        //printf("op = %s\n", lineptr);
+        int opCode = isOperator(lineptr);
+        if (opCode == -1) {
+            Symbol sym = elementToValue(lineptr, symtab);
+            
+            if (sym.type == Unknown) {
+                fprintf(stderr, "let: symbol '%s' does not exist\n", lineptr);
+                break;
+            }
+            stk_push(st1, (void *) createSymbol(sym.name, sym.value, sym.type));
+        } else {
+            Value value;
+            value.iVal = opCode;
+            stk_push(st1, (void *) createSymbol(lineptr, value, Unknown));
+        }
+        lineptr = strtok(NULL, " ,\n");
+    }
+
+    while (!stk_empty(st1)) {
+        stk_push(st2, stk_pop(st1));
+    }
+
+    // Convert to postfix
+    while (!stk_empty(st2)) {
+        Symbol *sym = (Symbol *) stk_pop(st2);
+        if (sym -> type != Unknown) {
+            stk_push(st3, (void *) sym);
+        } else {
+            if (sym -> name[0] == '(') {
+                stk_push(st1, (void *) sym);
+            } else if (sym -> name[0] == ')') {
+                while (!stk_empty(st1)) {
+                    Symbol *top = stk_pop(st1);
+                    if (top -> name[0] == '(') {
+                        free(top);
+                        break;
+                    }
+                    stk_push(st3, (void *) top);
+                }
+                free(sym);
+            } else {
+                while (!stk_empty(st1)) {
+                    Symbol *top = stk_top(st1);
+                    if (top -> name[0] == '(') {
+                        top = stk_pop(st1);
+                        free(top);
+                        break;
+                    }
+                    if (top -> value.iVal <= sym -> value.iVal) {
+                        stk_push(st3, (void *) stk_pop(st1));
+                    } else {
+                        break;
+                    }
+                }
+                stk_push(st1, (void *) sym);
+            }
+        }
+    }
+
+    while (!stk_empty(st1)) {
+        stk_push(st3, stk_pop(st1));
+    }
+    while (!stk_empty(st3)) {      
+        stk_push(st2, stk_pop(st3));
+    }
+
+    // Evaluate: st1 contains the results. st2 contains the expression
+    while (!stk_empty(st2)) {
+        Symbol *sym = (Symbol *) stk_pop(st2);
+        if (sym -> type == Unknown) {
+            Symbol *sym2 = stk_pop(st1);
+            Symbol *sym1 = stk_pop(st1);
+            if (sym -> name[0] == '%' && (sym1 -> type == Float || sym2 -> type == Float)) {
+                fprintf(stderr, "Bad operand ");
+                if (sym1 -> type == Float) {
+                    fprintf(stderr, "%.3f ", sym1 -> value.fVal);
+                }
+                if (sym2 -> type == Float) {
+                    fprintf(stderr, "%.3f ", sym2 -> value.fVal);
+                }
+                fprintf(stderr, "with operator %%\n");
+                free(sym1);
+                free(sym2);
+                free(sym);
+                break;
+            }
+
+            Symbol *result;
+            Value value;
+            value.iVal = 0;
+            value.fVal = 0.0;
+
+            if (sym1 -> type == Float || sym2 -> type == Float) {
+                result = createSymbol("result", value, Float);
+            } else {
+                result = createSymbol("result", value, Integer);
+            }
+
+            switch(sym -> name[0]) {
+                case '+':
+                    if (result -> type == Float) {
+                        value.fVal = 
+                        (sym1 -> type == Integer ? sym1 -> value.iVal : sym1 -> value.fVal)
+                        + (sym2 -> type == Integer ? sym2 -> value.iVal : sym2 -> value.fVal);
+                    } else {
+                        value.iVal = 
+                        (sym1 -> type == Integer ? sym1 -> value.iVal : sym1 -> value.fVal)
+                        + (sym2 -> type == Integer ? sym2 -> value.iVal : sym2 -> value.fVal);
+                    }
+                    break;
+                case '-':
+                    if (result -> type == Float) {
+                        value.fVal = 
+                        (sym1 -> type == Integer ? sym1 -> value.iVal : sym1 -> value.fVal)
+                        - (sym2 -> type == Integer ? sym2 -> value.iVal : sym2 -> value.fVal);
+                    } else {
+                        value.iVal = 
+                        (sym1 -> type == Integer ? sym1 -> value.iVal : sym1 -> value.fVal)
+                        - (sym2 -> type == Integer ? sym2 -> value.iVal : sym2 -> value.fVal);
+                    }
+                    break;
+                case '*':
+                    if (result -> type == Float) {
+                        value.fVal = 
+                        (sym1 -> type == Integer ? sym1 -> value.iVal : sym1 -> value.fVal)
+                        * (sym2 -> type == Integer ? sym2 -> value.iVal : sym2 -> value.fVal);
+                    } else {
+                        value.iVal = 
+                        (sym1 -> type == Integer ? sym1 -> value.iVal : sym1 -> value.fVal)
+                        * (sym2 -> type == Integer ? sym2 -> value.iVal : sym2 -> value.fVal);
+                    }
+                    break;
+                case '/':
+                    if (sym2 -> type == Integer && sym2 -> value.iVal == 0) {
+                        value.fVal = 0.0;
+                        value.iVal = 0;
+                    } else if (sym2 -> type == Float && sym2 -> value.fVal == 0.0) {
+                        value.fVal = 0.0;
+                        value.iVal = 0;
+                    } else {
+                        if (result -> type == Float) {
+                            value.fVal = 1.0 *
+                            (sym1 -> type == Integer ? sym1 -> value.iVal : sym1 -> value.fVal)
+                            / (sym2 -> type == Integer ? sym2 -> value.iVal : sym2 -> value.fVal);
+                        } else {
+                            value.iVal = 1.0 *
+                            (sym1 -> type == Integer ? sym1 -> value.iVal : sym1 -> value.fVal)
+                            / (sym2 -> type == Integer ? sym2 -> value.iVal : sym2 -> value.fVal);
+                        }
+                    }
+                    break;
+                case '%':
+                    if (sym2 -> type == Integer && sym2 -> value.iVal == 0) {
+                        value.fVal = 0.0;
+                        value.iVal = 0;
+                    } else if (sym2 -> type == Float && sym2 -> value.fVal == 0.0) {
+                        value.fVal = 0.0;
+                        value.iVal = 0;
+                    } else {
+                        if (result -> type == Float) {
+                            value.fVal = sym1 -> value.iVal % sym2 -> value.iVal;
+                        } else {
+                            value.iVal = sym1 -> value.iVal % sym2 -> value.iVal;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            result -> value = value;
+
+            free(sym1);
+            free(sym2);
+            free(sym);
+            stk_push(st1, (void *) result);
+        } else {
+            stk_push(st1, (void *) sym);
+        }
+    }
+
+    Symbol *result = stk_pop(st1);
+    Symbol *currentSym = get(varName, symtab);
+    if (currentSym -> type == Integer && result -> type == Float) {
+        currentSym -> value.iVal = (int) roundf(result -> value.fVal);
+    } else if (currentSym -> type == Float && result -> type == Integer) {
+        currentSym -> value.fVal = (float) result -> value.iVal;
+    } else {
+        currentSym -> value = result -> value;
+    }
+    free(result);
+
+    while(!stk_empty(st2)) {
+        free(stk_pop(st2));
+    }
+
+    while(!stk_empty(st1)) {
+        free(stk_pop(st1));
+    }
+
+    while(!stk_empty(st3)) {
+        free(stk_pop(st3));
+    }
+
+    stk_destroy(st1);
+    stk_destroy(st2);
+    stk_destroy(st3);
 }
 
 /// Process the if statement
@@ -225,4 +454,24 @@ Symbol elementToValue(char *lineptr, SymTab *symtab) {
         }
     }
     return symbol;
+}
+
+/// Determine if a string is an operator or not
+/// @param lineptr: the string to check
+/// @return: 0 if it's a bracket, 1 if it's a mop, 2 if it's a aop, 
+///         -1 if it's not an operator
+int isOperator(char *lineptr) {
+
+    if (strlen(lineptr) != 1) {
+        return -1;
+    }
+    if (lineptr[0] == '(' || lineptr[0] == ')') {
+        return 0;
+    } else if (lineptr[0] == '*' || lineptr[0] == '/' || lineptr[0] == '%') {
+        return 1;
+    } else if (lineptr[0] == '+' || lineptr[0] == '-') {
+        return 2;
+    }
+
+    return -1;
 }

@@ -53,4 +53,10 @@ void printValSymbol(Symbol *entry);
 /// @return: a symbol contain the element
 Symbol elementToValue(char *lineptr, SymTab *symtab);
 
+/// Determine if a string is an operator or not
+/// @param lineptr: the string to check
+/// @return: 0 if it's a bracket, 1 if it's a mop, 2 if it's a aop, 
+///         -1 if it's not an operator
+int isOperator(char *lineptr);
+
 #endif

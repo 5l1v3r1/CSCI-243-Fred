@@ -8,10 +8,11 @@
 #include <stdbool.h>
 #include <assert.h>
 
-#define	STACK_SIZE	5
+#define	STACK_ALLOC_UNIT	5
 
 struct stackStruct {
-	void *contents[ STACK_SIZE ];
+	void **contents;
+	size_t capacity;
 	size_t num;
 };
 
@@ -22,6 +23,8 @@ StackADT stk_create( void ) {
 
 	new = (StackADT) malloc( sizeof(struct stackStruct) );
 	if( new != 0 ) {
+		new->contents = 0;
+		new->capacity = 0;
 		new->num = 0;
 	}
 
@@ -29,19 +32,39 @@ StackADT stk_create( void ) {
 }
 
 void stk_destroy( StackADT stack ) {
-
 	assert( stack != 0 );
+
+	if( stack->contents != 0 ) {
+		free( stack->contents );
+	}
 
 	free( stack );
 }
 
 void stk_clear( StackADT stack ) {
+	if( stack->contents != 0 ) {
+		free( stack->contents );
+		stack->contents = 0;
+	}
+	stack->capacity = 0;
 	stack->num = 0;
 }
 
 void stk_push( StackADT stack, void *data ) {
 
-	assert( stack->num < STACK_SIZE );
+	if( stack->contents == 0 ) {
+		stack->contents = malloc( sizeof(void *) * STACK_ALLOC_UNIT );
+		assert( stack->contents != 0 );
+		stack->capacity = STACK_ALLOC_UNIT;
+	}
+	if( stack->num >= stack->capacity ) {
+		void *tmp;
+		tmp = realloc( stack->contents,
+			sizeof(void *) * (stack->capacity + STACK_ALLOC_UNIT) );
+		assert( tmp != 0 );
+		stack->contents = tmp;
+		stack->capacity += STACK_ALLOC_UNIT;
+	}
 
 	stack->contents[stack->num] = data;
 	stack->num += 1;
@@ -76,5 +99,6 @@ bool stk_empty( StackADT stack ) {
 }
 
 bool stk_full( StackADT stack ) {
-	return( stack->num >= STACK_SIZE );
+	(void)stack; // quiet. shh!
+	return( false );
 }
