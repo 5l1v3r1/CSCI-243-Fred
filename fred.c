@@ -14,7 +14,9 @@
 #include "utils.h"
 #include "symtab.h"
 
-
+/// Process the input 
+/// @param symtabFile: the symbol table file
+/// @param programFile: the Fred program file
 void processProgram(char *symtabFile, char *programFile) {
     char *cmd = NULL;
     size_t len = 0;
@@ -67,6 +69,10 @@ void processProgram(char *symtabFile, char *programFile) {
     destroySymTab(symtab);
 }
 
+/// Main program
+/// @param argc: argument count
+/// @param argv: argument vector
+/// @return: EXIT_SUCCESS if no error occurred, otherwise EXIT_FAILURE
 int main(int argc, char **argv) {
     char *symtabFile = NULL;
     char *programFile = NULL;

@@ -602,5 +602,7 @@ void processStatement(char *cmd, SymTab *symtab) {
             idx++;
         }
         processIf(cmd + idx, symtab);
+    } else {
+        fprintf(stderr, "Unknown statement %s\n", cmd + idx);
     }
 }
