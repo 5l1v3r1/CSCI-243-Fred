@@ -59,4 +59,9 @@ Symbol elementToValue(char *lineptr, SymTab *symtab);
 ///         -1 if it's not an operator
 int isOperator(char *lineptr);
 
+/// Process a Fred statement
+/// @param lineptr: the string to check
+/// @param symtab: the symbol table
+void processStatement(char *cmd, SymTab *symtab);
+
 #endif

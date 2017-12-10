@@ -49,52 +49,7 @@ void processProgram(char *symtabFile, char *programFile) {
             puts("");
         }
 
-        size_t idx = 0;
-        while(cmd[idx] == ' ') {
-            idx++;
-        }
-
-        if (!strncmp(cmd + idx, "prt ", strlen("ptr "))) {
-            while(cmd[idx] != ' ') {
-                idx++;
-            }
-            while(cmd[idx] == ' ') {
-                idx++;
-            }
-            processPrt(cmd + idx);
-        } else if (!strncmp(cmd + idx, "display ", strlen("display "))) {
-            while(cmd[idx] != ' ') {
-                idx++;
-            }
-            while(cmd[idx] == ' ') {
-                idx++;
-            }
-            processDisplay(cmd + idx, symtab);
-        } else if (!strncmp(cmd + idx, "define ", strlen("define "))) {
-            while(cmd[idx] != ' ') {
-                idx++;
-            }
-            while(cmd[idx] == ' ') {
-                idx++;
-            }
-            processDefine(cmd + idx, symtab);
-        } else if (!strncmp(cmd + idx, "let ", strlen("let "))) {
-            while(cmd[idx] != ' ') {
-                idx++;
-            }
-            while(cmd[idx] == ' ') {
-                idx++;
-            }
-            processLet(cmd + idx, symtab);
-        } else if (!strncmp(cmd + idx, "if ", strlen("if "))) {
-            while(cmd[idx] != ' ') {
-                idx++;
-            }
-            while(cmd[idx] == ' ') {
-                idx++;
-            }
-            processIf(cmd + idx, symtab);
-        }
+        processStatement(cmd, symtab);
     }
 
     dump(symtab);

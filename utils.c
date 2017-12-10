@@ -151,7 +151,6 @@ void processPrt(char *cmd) {
 void processLet(char *cmd, SymTab *symtab) {
     char *lineptr = NULL;
     char *varName = strtok(cmd, " ,\n");
-    //printf("varName = %s\n", varName);
     
     if (has(varName, symtab) == -1) {
         fprintf(stderr, "let: symbol '%s' does not exist\n", varName);
@@ -172,7 +171,6 @@ void processLet(char *cmd, SymTab *symtab) {
     // Extract tokens
     lineptr = strtok(NULL, " ,\n");
     while(lineptr != NULL) {
-        //printf("op = %s\n", lineptr);
         int opCode = isOperator(lineptr);
         if (opCode == -1) {
             Symbol sym = elementToValue(lineptr, symtab);
@@ -385,7 +383,86 @@ void processLet(char *cmd, SymTab *symtab) {
 /// @param cmd: the statement
 /// @param symtab: the symbol table
 void processIf(char *cmd, SymTab *symtab) {
+    char *element1 = strtok(cmd, " ,\n");
+    char *bop = strtok(NULL, " ,\n");
+    char *element2 = strtok(NULL, " ,\n");
+    
+    Symbol sym1 = elementToValue(element1, symtab);
+    if (sym1.type == Unknown) {
+        fprintf(stderr, "if: symbol '%s' does not exist\n", element1);
+        return;
+    }
 
+    Symbol sym2 = elementToValue(element2, symtab);
+    if (sym2.type == Unknown) {
+        fprintf(stderr, "if: symbol '%s' does not exist\n", element2);
+        return;
+    }
+
+    if (bop[0] != '!') {
+        switch(bop[0]) {
+            case '=':
+                if (!(
+                    (sym1.type == Integer ? sym1.value.iVal : sym1.value.fVal)
+                    == (sym2.type == Integer ? sym2.value.iVal : sym2.value.fVal)
+                )) {
+                    return;
+                }
+                break;
+            case '>':
+                if (!(
+                    (sym1.type == Integer ? sym1.value.iVal : sym1.value.fVal)
+                    > (sym2.type == Integer ? sym2.value.iVal : sym2.value.fVal)
+                )) {
+                    return;
+                }
+                break;
+            case '<':
+                if (!(
+                    (sym1.type == Integer ? sym1.value.iVal : sym1.value.fVal)
+                    < (sym2.type == Integer ? sym2.value.iVal : sym2.value.fVal)
+                )) {
+                    return;
+                }
+                break;
+            default:
+                break;
+        }
+    } else {
+        switch(bop[1]) {
+            case '=':
+                if (!(
+                    (sym1.type == Integer ? sym1.value.iVal : sym1.value.fVal)
+                    != (sym2.type == Integer ? sym2.value.iVal : sym2.value.fVal)
+                )) {
+                    return;
+                }
+                break;
+            case '>':
+                if (!(
+                    (sym1.type == Integer ? sym1.value.iVal : sym1.value.fVal)
+                    <= (sym2.type == Integer ? sym2.value.iVal : sym2.value.fVal)
+                )) {
+                    return;
+                }
+                break;
+            case '<':
+                if (!(
+                    (sym1.type == Integer ? sym1.value.iVal : sym1.value.fVal)
+                    >= (sym2.type == Integer ? sym2.value.iVal : sym2.value.fVal)
+                )) {
+                    return;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    char *lineptr = NULL;    
+    strtok(NULL, " ,\n");
+    lineptr = strtok(NULL, "");
+    processStatement(lineptr, symtab);
 }
 
 /// Process the display statement
@@ -474,4 +551,56 @@ int isOperator(char *lineptr) {
     }
 
     return -1;
+}
+
+/// Process a Fred statement
+/// @param lineptr: the string to check
+/// @param symtab: the symbol table
+void processStatement(char *cmd, SymTab *symtab) {
+    size_t idx = 0;
+    while(cmd[idx] == ' ') {
+        idx++;
+    }
+
+    if (!strncmp(cmd + idx, "prt ", strlen("ptr "))) {
+        while(cmd[idx] != ' ') {
+            idx++;
+        }
+        while(cmd[idx] == ' ') {
+            idx++;
+        }
+        processPrt(cmd + idx);
+    } else if (!strncmp(cmd + idx, "display ", strlen("display "))) {
+        while(cmd[idx] != ' ') {
+            idx++;
+        }
+        while(cmd[idx] == ' ') {
+            idx++;
+        }
+        processDisplay(cmd + idx, symtab);
+    } else if (!strncmp(cmd + idx, "define ", strlen("define "))) {
+        while(cmd[idx] != ' ') {
+            idx++;
+        }
+        while(cmd[idx] == ' ') {
+            idx++;
+        }
+        processDefine(cmd + idx, symtab);
+    } else if (!strncmp(cmd + idx, "let ", strlen("let "))) {
+        while(cmd[idx] != ' ') {
+            idx++;
+        }
+        while(cmd[idx] == ' ') {
+            idx++;
+        }
+        processLet(cmd + idx, symtab);
+    } else if (!strncmp(cmd + idx, "if ", strlen("if "))) {
+        while(cmd[idx] != ' ') {
+            idx++;
+        }
+        while(cmd[idx] == ' ') {
+            idx++;
+        }
+        processIf(cmd + idx, symtab);
+    }
 }
