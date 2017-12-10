@@ -21,7 +21,8 @@ int symbolCmp(const void *p1, const void *p2);
 
 /// Process the define statement
 /// @param cmd: the statement
-void processDefine(char *cmd);
+/// @param symtab: the symbol table
+void processDefine(char *cmd, SymTab *symtab);
 
 /// Process the prt statement
 /// @param cmd: the statement
@@ -29,11 +30,13 @@ void processPrt(char *cmd);
 
 /// Process the let statement
 /// @param cmd: the statement
-void processLet(char *cmd);
+/// @param symtab: the symbol table
+void processLet(char *cmd, SymTab *symtab);
 
 /// Process the if statement
 /// @param cmd: the statement
-void processIf(char *cmd);
+/// @param symtab: the symbol table
+void processIf(char *cmd, SymTab *symtab);
 
 /// Process the display statement
 /// @param cmd: the statement

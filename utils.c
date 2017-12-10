@@ -82,8 +82,35 @@ int symbolCmp(const void *p1, const void *p2) {
 
 /// Process the define statement
 /// @param cmd: the statement
-void processDefine(char *cmd) {
+/// @param symtab: the symbol table
+void processDefine(char *cmd, SymTab *symtab) {
+    char *lineptr = NULL;
+    lineptr = strtok(cmd, " ,\n");
+    Type type;
+    Value value;
+    
+    value.iVal = 0;
+    value.fVal = 0;
 
+    if (!strcmp(lineptr, "integer")) {
+        type = Integer;
+    } else if (!strcmp(lineptr, "real")) {
+        type = Float;
+    } else {
+        fprintf(stderr, "define: unknown type name '%s'\n", lineptr);
+        return;
+    }
+
+    lineptr = strtok(NULL, " ,\n");
+    
+    while(lineptr != NULL) {
+        if (has(lineptr, symtab) != -1) {
+            fprintf(stderr, "define: symbol '%s' already existed\n", lineptr);
+        } else {
+            put(lineptr, value, type, symtab);
+        }
+        lineptr = strtok(NULL, " ,\n");
+    }
 }
 
 /// Process the prt statement
@@ -120,13 +147,15 @@ void processPrt(char *cmd) {
 
 /// Process the let statement
 /// @param cmd: the statement
-void processLet(char *cmd) {
+/// @param symtab: the symbol table
+void processLet(char *cmd, SymTab *symtab) {
 
 }
 
 /// Process the if statement
 /// @param cmd: the statement
-void processIf(char *cmd) {
+/// @param symtab: the symbol table
+void processIf(char *cmd, SymTab *symtab) {
 
 }
 
@@ -139,9 +168,13 @@ void processDisplay(char *cmd, SymTab *symtab) {
 
     while(lineptr != NULL) {
         if (strlen(lineptr) > 0) {
-            printf(" ");
             Symbol entry = elementToValue(lineptr, symtab);
-            printValSymbol(&entry);
+            if (entry.type != Unknown) {
+                printf(" ");
+                printValSymbol(&entry);
+            } else {
+                fprintf(stderr, "display: symbol '%s' does not exist\n", lineptr);
+            }
         }
         lineptr = strtok(NULL, " ,\n");
     }
@@ -167,6 +200,10 @@ Symbol elementToValue(char *lineptr, SymTab *symtab) {
 
     if (strlen(lineptr) > 0) {
         if (('A' <= lineptr[0] && lineptr[0] <= 'Z') || ('a' <= lineptr[0] && lineptr[0] <= 'z')) {
+            if (has(lineptr, symtab) == -1) {
+                symbol.type = Unknown;
+                return symbol;
+            }
             Symbol *entry = get(lineptr, symtab);
             symbol.value = entry -> value;
             symbol.type = entry -> type;

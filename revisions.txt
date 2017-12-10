@@ -1,3 +1,9 @@
+commit 4bf9db71579af28fa9e7abd2c09fde52212979c7
+Author: dphan <ducphanduy.agentp@gmail.com>
+Date:   Sat Dec 9 18:55:51 2017 -0500
+
+    Fix format string error, prevent exploitation and privilege escalation
+
 commit d1c514e4fcbf7b997534eaaca4465a1d4cdb735d
 Author: dphan <ducphanduy.agentp@gmail.com>
 Date:   Sat Dec 9 18:54:01 2017 -0500

@@ -71,11 +71,29 @@ void processProgram(char *symtabFile, char *programFile) {
             }
             processDisplay(cmd + idx, symtab);
         } else if (!strncmp(cmd + idx, "define ", strlen("define "))) {
-           
+            while(cmd[idx] != ' ') {
+                idx++;
+            }
+            while(cmd[idx] == ' ') {
+                idx++;
+            }
+            processDefine(cmd + idx, symtab);
         } else if (!strncmp(cmd + idx, "let ", strlen("let "))) {
-            
+            while(cmd[idx] != ' ') {
+                idx++;
+            }
+            while(cmd[idx] == ' ') {
+                idx++;
+            }
+            processLet(cmd + idx, symtab);
         } else if (!strncmp(cmd + idx, "if ", strlen("if "))) {
-
+            while(cmd[idx] != ' ') {
+                idx++;
+            }
+            while(cmd[idx] == ' ') {
+                idx++;
+            }
+            processIf(cmd + idx, symtab);
         }
     }
 
